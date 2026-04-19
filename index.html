@@ -327,6 +327,24 @@
   }
   .meta a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
+  .fleet-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    align-self: flex-start;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid var(--ink);
+    transition: all 0.15s ease;
+  }
+  .fleet-link:hover {
+    color: var(--eos);
+    border-bottom-color: var(--eos);
+  }
+
   @media (max-width: 640px) {
     .wrap { padding: 40px 24px 32px; }
     .buttons { grid-template-columns: 1fr; }
@@ -351,8 +369,8 @@
     <div class="picker-label">Select your model</div>
     <div class="buttons" id="buttons">
       <button class="model-btn" data-model="v1">
-        <div class="btn-name">Surface Hub</div>
-        <div class="btn-meta">v1 · 55" / 84"</div>
+        <div class="btn-name">Surface Hub v1</div>
+        <div class="btn-meta">55" / 84" · 2015</div>
       </button>
       <button class="model-btn" data-model="2s">
         <div class="btn-name">Surface Hub 2S</div>
@@ -371,6 +389,7 @@
 
   <div class="footer">
     <p class="share-nudge">If you work in a building with Surface Hubs, your AV or IT lead needs these dates in their planning doc.</p>
+    <a href="./fleet/" class="fleet-link">Managing a fleet? See fleet exposure view →</a>
     <div class="meta">
       <span id="timestamp">As of …</span>
       <a href="https://learn.microsoft.com/en-us/surface-hub/surface-hub-driver-firmware-accessories-lifecycle" target="_blank" rel="noopener">Source · Microsoft Learn ↗</a>
@@ -383,7 +402,7 @@
   // Model data — all dates from Microsoft Learn
   const MODELS = {
     'v1': {
-      name: 'Surface Hub (v1)',
+      name: 'Surface Hub v1',
       sizes: '55" / 84"',
       released: 'June 1, 2015',
       eosDate: new Date('2022-11-30T00:00:00'),
