@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Surface Hub Fleet Exposure — Countdown for Your Fleet</title>
-<meta name="description" content="Input your Surface Hub fleet counts and see exactly when each milestone hits and how much of your fleet is already exposed.">
+<title>Surface Hub Countdown — End-of-Servicing Clock</title>
+<meta name="description" content="A live countdown to Microsoft's published end-of-servicing dates for every Surface Hub model.">
 
-<meta property="og:title" content="Surface Hub Fleet Exposure Calculator">
-<meta property="og:description" content="See exactly when your fleet hits Microsoft's end-of-servicing milestones.">
+<!-- Open Graph tags for LinkedIn preview -->
+<meta property="og:title" content="Every Surface Hub is on a clock.">
+<meta property="og:description" content="A live countdown to Microsoft's published end-of-servicing dates for every Surface Hub in the field.">
 <meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,9 +27,6 @@
     --eos: #C24914;
     --final: #8B1A1A;
     --past: #6B6055;
-    --band-active: #D6E5DF;
-    --band-eos: #F4D5BD;
-    --band-past: #E8E2D5;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -44,29 +42,18 @@
   }
 
   .wrap {
-    max-width: 960px;
+    max-width: 880px;
     margin: 0 auto;
-    padding: 48px 40px 48px;
+    padding: 64px 40px 48px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  .back-link {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    margin-bottom: 32px;
-    align-self: flex-start;
-  }
-  .back-link:hover { color: var(--ink); }
-
   /* HEADER */
-  .header { margin-bottom: 48px; }
+  .header {
+    margin-bottom: 56px;
+  }
   .kicker {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -88,276 +75,233 @@
   h1 {
     font-family: 'Fraunces', serif;
     font-weight: 400;
-    font-size: clamp(36px, 5.6vw, 60px);
+    font-size: clamp(40px, 6.2vw, 68px);
     line-height: 0.98;
     letter-spacing: -0.028em;
     color: var(--ink);
     margin-bottom: 20px;
   }
-  h1 em { font-style: italic; font-weight: 300; color: var(--eos); }
-
+  h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--eos);
+  }
   .sub {
     font-family: 'Fraunces', serif;
-    font-size: clamp(15px, 1.9vw, 18px);
+    font-size: clamp(16px, 2vw, 19px);
     font-weight: 300;
     line-height: 1.45;
     color: var(--ink-soft);
-    max-width: 640px;
+    max-width: 620px;
   }
 
-  /* INPUTS */
-  .inputs-section {
-    margin-bottom: 48px;
-    padding-top: 32px;
-    border-top: 2px solid var(--ink);
+  /* MODEL PICKER */
+  .picker {
+    margin-bottom: 56px;
   }
-  .section-label {
+  .picker-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
-  .inputs {
+  .buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
-  .input-group {
-    border: 1.5px solid var(--ink);
-    padding: 20px;
+  .model-btn {
     background: transparent;
-    transition: background 0.15s ease;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    padding: 20px 18px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
-  .input-group:focus-within {
-    background: var(--cream-deep);
+  .model-btn:hover {
+    background: var(--ink);
+    color: var(--cream);
   }
-  .input-label {
+  .model-btn.active {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .model-btn .btn-name {
     font-family: 'Fraunces', serif;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 500;
     line-height: 1.1;
-    color: var(--ink);
-    margin-bottom: 4px;
+    letter-spacing: -0.01em;
   }
-  .input-meta {
+  .model-btn .btn-meta {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.08em;
     color: var(--muted);
     text-transform: uppercase;
-    margin-bottom: 16px;
   }
-  .input-row {
+  .model-btn.active .btn-meta,
+  .model-btn:hover .btn-meta {
+    color: var(--muted-soft);
+  }
+
+  /* COUNTDOWN DISPLAY */
+  .display {
+    border-top: 2px solid var(--ink);
+    padding-top: 40px;
+    margin-bottom: 40px;
+    min-height: 340px;
+  }
+  .display-empty {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
-  }
-  .input-row input {
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
     font-family: 'Fraunces', serif;
-    font-weight: 400;
-    font-size: 36px;
-    line-height: 1;
-    width: 100%;
-    color: var(--ink);
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid var(--rule);
-    padding: 4px 0 6px;
-    outline: none;
-    font-variant-numeric: tabular-nums;
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--muted);
   }
-  .input-row input:focus {
-    border-bottom-color: var(--ink);
-  }
-  .input-row input::-webkit-outer-spin-button,
-  .input-row input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  .input-row input[type=number] { -moz-appearance: textfield; }
-  .input-unit {
+
+  .status-kicker {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--muted);
-    flex-shrink: 0;
+    margin-bottom: 20px;
+    color: var(--eos);
   }
+  .status-kicker.past { color: var(--past); }
+  .status-kicker.final { color: var(--final); }
 
-  /* FLEET SUMMARY */
-  .summary-section {
-    margin-bottom: 48px;
-    padding-top: 32px;
-    border-top: 1px solid var(--rule);
-    min-height: 160px;
-  }
-  .summary-empty {
+  .countdown-headline {
     font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-size: 19px;
-    font-weight: 300;
-    color: var(--muted);
-    padding: 24px 0;
-  }
-  .summary-headline {
-    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 32px);
     font-weight: 400;
-    font-size: clamp(26px, 3.2vw, 36px);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
     color: var(--ink);
-    max-width: 760px;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
+    max-width: 640px;
   }
-  .summary-headline em {
+  .countdown-headline em {
     font-style: italic;
     font-weight: 300;
     color: var(--eos);
   }
-  .summary-stats {
+  .countdown-headline.past em { color: var(--past); }
+  .countdown-headline.final em { color: var(--final); }
+
+  .clock {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
   }
-  .stat {
-    padding: 24px 20px;
-    border-right: 1px solid var(--rule);
+  .clock-unit {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
-  .stat:last-child { border-right: none; }
-  .stat-label {
+  .clock-num {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 8vw, 76px);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .clock-num.past { color: var(--past); }
+  .clock-num.final { color: var(--final); }
+  .clock-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 10px;
-  }
-  .stat-value {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(34px, 4.2vw, 46px);
-    font-weight: 400;
-    line-height: 0.98;
-    letter-spacing: -0.025em;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-    margin-bottom: 8px;
-  }
-  .stat-value.past { color: var(--past); }
-  .stat-value.final { color: var(--final); }
-  .stat-sub {
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--ink-soft);
   }
 
-  /* TIMELINE VIS */
-  .timeline-section {
-    margin-bottom: 48px;
+  .context-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 36px;
+    align-items: baseline;
   }
-  .milestone {
-    padding: 24px 0;
-    border-bottom: 1px solid var(--rule);
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 32px;
-    align-items: center;
-  }
-  .milestone:first-of-type {
-    border-top: 2px solid var(--ink);
-  }
-  .milestone:last-of-type {
-    border-bottom: 2px solid var(--ink);
-  }
-  .milestone-date {
+  .context-item {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  .milestone-date .date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--ink);
-  }
-  .milestone-date .date.past { color: var(--past); }
-  .milestone-date .date.final { color: var(--final); }
-  .milestone-date .countdown {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .milestone-bar-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .milestone-bar {
-    height: 28px;
-    background: var(--cream-deep);
-    display: flex;
-    border: 1px solid var(--rule);
-    position: relative;
-    overflow: hidden;
-  }
-  .bar-segment {
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
+  .context-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-    overflow: hidden;
-    color: var(--ink);
-    min-width: 0;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
   }
-  .bar-segment.unsupported {
-    background: repeating-linear-gradient(
-      45deg,
-      var(--band-eos),
-      var(--band-eos) 5px,
-      var(--cream) 5px,
-      var(--cream) 11px
-    );
-    color: var(--eos);
-  }
-  .bar-segment.supported {
-    background: var(--band-active);
-    color: var(--active);
-  }
-  .milestone-context {
+  .context-value {
     font-family: 'Inter Tight', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
-    color: var(--ink-soft);
+    color: var(--ink);
   }
 
-  /* FOOTER */
+  .source-link-wrap {
+    margin-top: 24px;
+  }
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 10px 16px;
+    border: 1.5px solid var(--ink);
+    transition: all 0.15s ease;
+  }
+  .source-link:hover {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .source-link::after {
+    content: '↗';
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+  }
+
+  /* FOOTER — share nudge + timestamp */
   .footer {
     margin-top: auto;
-    padding-top: 32px;
+    padding-top: 40px;
     border-top: 1px solid var(--rule);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
   .share-nudge {
     font-family: 'Fraunces', serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 300;
     font-style: italic;
     line-height: 1.45;
@@ -383,13 +327,29 @@
   }
   .meta a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
+  .fleet-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    align-self: flex-start;
+    padding-bottom: 2px;
+    border-bottom: 1.5px solid var(--ink);
+    transition: all 0.15s ease;
+  }
+  .fleet-link:hover {
+    color: var(--eos);
+    border-bottom-color: var(--eos);
+  }
+
   @media (max-width: 640px) {
-    .wrap { padding: 32px 20px; }
-    .inputs { grid-template-columns: 1fr; }
-    .summary-stats { grid-template-columns: 1fr; }
-    .stat { border-right: none; border-bottom: 1px solid var(--rule); }
-    .stat:last-child { border-bottom: none; }
-    .milestone { grid-template-columns: 1fr; gap: 12px; }
+    .wrap { padding: 40px 24px 32px; }
+    .buttons { grid-template-columns: 1fr; }
+    .clock { grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+    .context-row { gap: 16px 28px; }
     .meta { flex-direction: column; align-items: flex-start; gap: 8px; }
   }
 
@@ -399,52 +359,37 @@
 
 <div class="wrap">
 
-  <a href="../" class="back-link">← Single device view</a>
-
   <div class="header">
-    <div class="kicker">Fleet exposure calculator</div>
-    <h1>How exposed is <em>your fleet</em>?</h1>
-    <p class="sub">Enter how many of each Surface Hub model you manage. See exactly when each milestone hits and how much of your fleet is already running unsupported.</p>
+    <div class="kicker">IT · AV · Real Estate Planning</div>
+    <h1>Every Surface Hub<br>is on a <em>clock.</em></h1>
+    <p class="sub">Microsoft has published end-of-servicing dates for every Surface Hub in the field. Pick a model to see the math.</p>
   </div>
 
-  <div class="inputs-section">
-    <div class="section-label">Your fleet</div>
-    <div class="inputs">
-      <div class="input-group">
-        <div class="input-label">Surface Hub v1</div>
-        <div class="input-meta">55" / 84" · 2015</div>
-        <div class="input-row">
-          <input type="number" id="count-v1" min="0" value="0" placeholder="0">
-          <span class="input-unit">Units</span>
-        </div>
-      </div>
-      <div class="input-group">
-        <div class="input-label">Surface Hub 2S</div>
-        <div class="input-meta">50" · 2019</div>
-        <div class="input-row">
-          <input type="number" id="count-2s" min="0" value="0" placeholder="0">
-          <span class="input-unit">Units</span>
-        </div>
-      </div>
-      <div class="input-group">
-        <div class="input-label">Surface Hub 3</div>
-        <div class="input-meta">50" / 85" · 2023</div>
-        <div class="input-row">
-          <input type="number" id="count-3" min="0" value="0" placeholder="0">
-          <span class="input-unit">Units</span>
-        </div>
-      </div>
+  <div class="picker">
+    <div class="picker-label">Select your model</div>
+    <div class="buttons" id="buttons">
+      <button class="model-btn" data-model="v1">
+        <div class="btn-name">Surface Hub v1</div>
+        <div class="btn-meta">55" / 84" · 2015</div>
+      </button>
+      <button class="model-btn" data-model="2s">
+        <div class="btn-name">Surface Hub 2S</div>
+        <div class="btn-meta">50" · 2019</div>
+      </button>
+      <button class="model-btn" data-model="3">
+        <div class="btn-name">Surface Hub 3</div>
+        <div class="btn-meta">50" / 85" · 2023</div>
+      </button>
     </div>
   </div>
 
-  <div class="summary-section" id="summary">
-    <p class="summary-empty">Enter your fleet above to see exposure.</p>
+  <div class="display" id="display">
+    <div class="display-empty">Select a model above.</div>
   </div>
 
-  <div class="timeline-section" id="timeline" style="display: none;"></div>
-
   <div class="footer">
-    <p class="share-nudge">Three steps for any Surface Hub owner: inventory the fleet, map each device to its Microsoft-published end-of-servicing date, start vendor-neutral replacement scoping.</p>
+    <p class="share-nudge">If you work in a building with Surface Hubs, your AV or IT lead needs these dates in their planning doc.</p>
+    <a href="./fleet.html" class="fleet-link">Managing a fleet? See fleet exposure view →</a>
     <div class="meta">
       <span id="timestamp">As of …</span>
       <a href="https://learn.microsoft.com/en-us/surface-hub/surface-hub-driver-firmware-accessories-lifecycle" target="_blank" rel="noopener">Source · Microsoft Learn ↗</a>
@@ -454,191 +399,133 @@
 </div>
 
 <script>
-  // Microsoft-published EOS dates
-  const MILESTONES = [
-    {
-      key: 'v1',
-      date: new Date('2022-11-30T00:00:00'),
-      label: 'Nov 30, 2022',
-      tone: 'past',
-      title: 'Surface Hub v1 firmware EOS',
-      mode: 'past'
+  // Model data — all dates from Microsoft Learn
+  const MODELS = {
+    'v1': {
+      name: 'Surface Hub v1',
+      sizes: '55" / 84"',
+      released: 'June 1, 2015',
+      eosDate: new Date('2022-11-30T00:00:00'),
+      mode: 'past',
+      headline: 'Firmware support <em>ended</em>',
+      verb: 'unsupported for',
+      note: 'No in-place upgrade path. Microsoft recommends hardware refresh.',
+      source: 'https://learn.microsoft.com/en-us/surface-hub/surface-hub-driver-firmware-accessories-lifecycle'
     },
-    {
-      key: '2s',
-      date: new Date('2027-01-11T00:00:00'),
-      label: 'Jan 11, 2027',
-      tone: '',
-      title: 'Surface Hub 2S firmware EOS',
-      mode: 'future'
+    '2s': {
+      name: 'Surface Hub 2S',
+      sizes: '50"',
+      released: 'April 17, 2019',
+      eosDate: new Date('2027-01-11T00:00:00'),
+      mode: 'future',
+      headline: 'Firmware support <em>ends</em>',
+      verb: 'remaining',
+      note: 'Windows 10 Team end of support hits Oct 14, 2025. Migrate to Windows 11 before then.',
+      source: 'https://learn.microsoft.com/en-us/surface-hub/surface-hub-windows10-eos-migration'
     },
-    {
-      key: '3',
-      date: new Date('2030-12-30T00:00:00'),
-      label: 'Dec 30, 2030',
-      tone: 'final',
-      title: 'Surface Hub 3 firmware EOS',
-      mode: 'future'
+    '3': {
+      name: 'Surface Hub 3',
+      sizes: '50" / 85"',
+      released: 'December 5, 2023',
+      eosDate: new Date('2030-12-30T00:00:00'),
+      mode: 'final',
+      headline: 'Firmware support <em>ends</em>',
+      verb: 'remaining',
+      note: 'The newest Surface Hub. No successor announced. Plan replacement scoping on a 3 to 5 year horizon.',
+      source: 'https://learn.microsoft.com/en-us/surface-hub/surface-hub-driver-firmware-accessories-lifecycle'
     }
-  ];
+  };
 
+  // Compute years/months/days/hours between two dates
   function diff(from, to) {
     let start = from < to ? from : to;
     let end = from < to ? to : from;
+
     let years = end.getFullYear() - start.getFullYear();
     let months = end.getMonth() - start.getMonth();
     let days = end.getDate() - start.getDate();
+    let hours = end.getHours() - start.getHours();
+
+    if (hours < 0) { hours += 24; days -= 1; }
     if (days < 0) {
       const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
       days += prevMonth.getDate();
       months -= 1;
     }
     if (months < 0) { months += 12; years -= 1; }
-    return { years, months, days };
+
+    return { years, months, days, hours };
   }
 
-  function formatDiff(d, past = false) {
-    const parts = [];
-    if (d.years > 0) parts.push(`${d.years} year${d.years === 1 ? '' : 's'}`);
-    if (d.months > 0) parts.push(`${d.months} month${d.months === 1 ? '' : 's'}`);
-    if (d.years === 0 && d.months < 12) parts.push(`${d.days} day${d.days === 1 ? '' : 's'}`);
-    const str = parts.slice(0, 2).join(', ');
-    return past ? `${str} ago` : `${str} remaining`;
-  }
-
-  function plural(n, unit) {
-    return `${n} ${unit}${n === 1 ? '' : 's'}`;
-  }
-
-  function render() {
-    const v1 = Math.max(0, parseInt(document.getElementById('count-v1').value) || 0);
-    const s2 = Math.max(0, parseInt(document.getElementById('count-2s').value) || 0);
-    const s3 = Math.max(0, parseInt(document.getElementById('count-3').value) || 0);
-    const total = v1 + s2 + s3;
-
-    const summaryEl = document.getElementById('summary');
-    const timelineEl = document.getElementById('timeline');
-
-    if (total === 0) {
-      summaryEl.innerHTML = '<p class="summary-empty">Enter your fleet above to see exposure.</p>';
-      timelineEl.style.display = 'none';
-      return;
-    }
+  function renderModel(key) {
+    const model = MODELS[key];
+    if (!model) return;
 
     const now = new Date();
+    const d = diff(now, model.eosDate);
 
-    // Exposure now: v1 is already past EOS
-    const alreadyExposed = v1;
-    const exposureNowPct = Math.round((alreadyExposed / total) * 100);
+    const modeClass = model.mode === 'past' ? 'past' : (model.mode === 'final' ? 'final' : '');
+    const statusLabel = model.mode === 'past' ? 'Status · Already unsupported' :
+                        model.mode === 'final' ? 'Status · The final wall' :
+                        'Status · Counting down';
 
-    // Exposure at Jan 2027: v1 + 2S
-    const by2027 = v1 + s2;
-    const by2027Pct = Math.round((by2027 / total) * 100);
+    const headlineText = model.mode === 'past'
+      ? `${model.name} has been <em>unsupported</em> for:`
+      : `${model.name} firmware support <em>ends</em> in:`;
 
-    // Exposure at Dec 2030: all
-    const by2030Pct = 100;
-
-    // Build summary
-    const headlineText = alreadyExposed > 0
-      ? `${plural(alreadyExposed, 'unit')} of your ${plural(total, 'Surface Hub')} <em>already out of firmware support.</em>`
-      : total > 0
-        ? `Your fleet of ${plural(total, 'Surface Hub')} is <em>on the clock.</em>`
-        : '';
-
-    summaryEl.innerHTML = `
-      <h2 class="summary-headline">${headlineText}</h2>
-      <div class="summary-stats">
-        <div class="stat">
-          <div class="stat-label">Today · Apr 2026</div>
-          <div class="stat-value ${alreadyExposed > 0 ? 'past' : ''}">${exposureNowPct}<span style="font-size: 0.55em; color: var(--muted); font-weight: 500;">%</span></div>
-          <div class="stat-sub">${plural(alreadyExposed, 'unit')} unsupported</div>
+    const displayEl = document.getElementById('display');
+    displayEl.innerHTML = `
+      <div class="status-kicker ${modeClass}">${statusLabel}</div>
+      <h2 class="countdown-headline ${modeClass}">${headlineText}</h2>
+      <div class="clock">
+        <div class="clock-unit">
+          <div class="clock-num ${modeClass}">${d.years}</div>
+          <div class="clock-label">Year${d.years === 1 ? '' : 's'}</div>
         </div>
-        <div class="stat">
-          <div class="stat-label">By Jan 11, 2027</div>
-          <div class="stat-value">${by2027Pct}<span style="font-size: 0.55em; color: var(--muted); font-weight: 500;">%</span></div>
-          <div class="stat-sub">${plural(by2027, 'unit')} unsupported</div>
+        <div class="clock-unit">
+          <div class="clock-num ${modeClass}">${d.months}</div>
+          <div class="clock-label">Month${d.months === 1 ? '' : 's'}</div>
         </div>
-        <div class="stat">
-          <div class="stat-label">By Dec 30, 2030</div>
-          <div class="stat-value final">${by2030Pct}<span style="font-size: 0.55em; color: var(--muted); font-weight: 500;">%</span></div>
-          <div class="stat-sub">${plural(total, 'unit')} unsupported</div>
+        <div class="clock-unit">
+          <div class="clock-num ${modeClass}">${d.days}</div>
+          <div class="clock-label">Day${d.days === 1 ? '' : 's'}</div>
         </div>
+        <div class="clock-unit">
+          <div class="clock-num ${modeClass}">${String(d.hours).padStart(2, '0')}</div>
+          <div class="clock-label">Hours</div>
+        </div>
+      </div>
+      <div class="context-row">
+        <div class="context-item">
+          <div class="context-label">End-of-servicing date</div>
+          <div class="context-value">${model.eosDate.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})}</div>
+        </div>
+        <div class="context-item">
+          <div class="context-label">Released</div>
+          <div class="context-value">${model.released}</div>
+        </div>
+        <div class="context-item">
+          <div class="context-label">Sizes</div>
+          <div class="context-value">${model.sizes}</div>
+        </div>
+      </div>
+      <p style="font-family: 'Fraunces', serif; font-size: 17px; font-weight: 300; line-height: 1.5; color: var(--ink-soft); margin-top: 24px; max-width: 640px;">
+        ${model.note}
+      </p>
+      <div class="source-link-wrap">
+        <a href="${model.source}" target="_blank" rel="noopener" class="source-link">Microsoft Learn · verify dates</a>
       </div>
     `;
 
-    // Build timeline
-    timelineEl.style.display = 'block';
-    timelineEl.innerHTML = `<div class="section-label" style="margin-bottom: 20px;">Milestone by milestone</div>`;
-
-    MILESTONES.forEach(m => {
-      const d = diff(now, m.date);
-      const isPast = m.date < now;
-
-      // Calculate exposed/supported counts at this milestone
-      let exposed, supported;
-      if (m.key === 'v1') {
-        exposed = v1;
-        supported = s2 + s3;
-      } else if (m.key === '2s') {
-        exposed = v1 + s2;
-        supported = s3;
-      } else {
-        exposed = total;
-        supported = 0;
-      }
-
-      const exposedPct = total > 0 ? (exposed / total) * 100 : 0;
-      const supportedPct = 100 - exposedPct;
-
-      const timingText = isPast
-        ? formatDiff(d, true)
-        : formatDiff(d, false);
-
-      let contextText = '';
-      if (m.key === 'v1') {
-        if (v1 === 0) {
-          contextText = `You have no Surface Hub v1 units — this milestone does not affect your fleet.`;
-        } else {
-          contextText = `Your ${plural(v1, 'Surface Hub v1 unit')} ${isPast ? 'have been' : 'will be'} unsupported for ${isPast ? formatDiff(d, false).replace(' remaining', '') : formatDiff(d, false).replace(' remaining', '')}.`;
-        }
-      } else if (m.key === '2s') {
-        if (s2 === 0) {
-          contextText = `You have no Surface Hub 2S units — this milestone does not affect your fleet.`;
-        } else {
-          contextText = `${plural(s2, 'Surface Hub 2S unit')} become unsupported. Cumulative fleet exposure: ${Math.round(exposedPct)}%.`;
-        }
-      } else if (m.key === '3') {
-        if (s3 === 0) {
-          contextText = `You have no Surface Hub 3 units — the final wall does not affect your fleet.`;
-        } else {
-          contextText = `${plural(s3, 'Surface Hub 3 unit')} become unsupported. Full fleet now past EOS.`;
-        }
-      }
-
-      // Build bar
-      const exposedLabel = exposed > 0 ? `${exposed} unsupported` : '';
-      const supportedLabel = supported > 0 ? `${supported} still supported` : '';
-
-      const barHtml = total > 0 ? `
-        <div class="milestone-bar">
-          ${exposed > 0 ? `<div class="bar-segment unsupported" style="width: ${exposedPct}%;">${exposedPct > 18 ? exposedLabel : ''}</div>` : ''}
-          ${supported > 0 ? `<div class="bar-segment supported" style="width: ${supportedPct}%;">${supportedPct > 18 ? supportedLabel : ''}</div>` : ''}
-        </div>
-      ` : '';
-
-      timelineEl.innerHTML += `
-        <div class="milestone">
-          <div class="milestone-date">
-            <div class="date ${m.tone}">${m.label}</div>
-            <div class="countdown">${timingText}</div>
-          </div>
-          <div class="milestone-bar-wrap">
-            ${barHtml}
-            <div class="milestone-context">${contextText}</div>
-          </div>
-        </div>
-      `;
+    // Update button active state
+    document.querySelectorAll('.model-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.model === key);
     });
+
+    // Update URL hash
+    if (location.hash !== `#/${key}`) {
+      history.replaceState(null, '', `#/${key}`);
+    }
   }
 
   function updateTimestamp() {
@@ -647,14 +534,29 @@
     document.getElementById('timestamp').textContent = `As of ${now.toLocaleDateString('en-US', opts)}`;
   }
 
-  // Wire up inputs
-  document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('input', render);
+  // Wire up buttons
+  document.querySelectorAll('.model-btn').forEach(btn => {
+    btn.addEventListener('click', () => renderModel(btn.dataset.model));
   });
 
+  // Handle direct links: #/v1, #/2s, #/3
+  function loadFromHash() {
+    const match = location.hash.match(/^#\/(v1|2s|3)$/);
+    if (match) renderModel(match[1]);
+  }
+
+  window.addEventListener('hashchange', loadFromHash);
+
+  // Initial render
   updateTimestamp();
-  render();
-  setInterval(() => { updateTimestamp(); render(); }, 60000);
+  loadFromHash();
+
+  // Update countdown every minute
+  setInterval(() => {
+    updateTimestamp();
+    const active = document.querySelector('.model-btn.active');
+    if (active) renderModel(active.dataset.model);
+  }, 60000);
 </script>
 
 </body>
